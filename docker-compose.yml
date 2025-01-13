@@ -1,51 +1,23 @@
-APPNAME:
-    env_file: .env
-    image: 
-    container_name: APPNAME
-    hostname: APPNAME
-    privileged: true
+services:
+  sonarr:
+    user: 0:666
+    image: lscr.io/linuxserver/sonarr:latest 
+    container_name: sonarr
     networks:
-      - admin
+      - proxy
+    hostname: sonarr
     volumes:
-      - ./config:/data
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /dev/fuse:/dev/fuse
+      - ./config:/config
+      - /media:/media
+      - /downloads:/downloads
+      - /downloads:/download
     environment:
-      - VIRTUAL_HOST=APPNAME.admin.pknw1.co.uk
-      - VIRTUAL_PORT=9000
-      - APP_GROUP=Core
-      - APP_LOGO=https://static-00.iconduck.com/assets.00/portainer-icon-1465x2048-t155ekm0.png
-    deploy:
-      resources:
-        limits:
-          cpus: "1"
-          memory: 200M
+      - APP_GROUP=Requests
+      - APP_LOGO=https://res.cloudinary.com/razordarkamg/image/upload/v1621212884/SonarrV3_pufacd.png
+      - VIRTUAL_HOST=sonarr.admin.pknw1.co.uk
+      - VIRTUAL_PORT=8989
 
 networks:
-  dmz:
-    name: ${DMZ_NETWORK} 
-    ipam:
-      config:
-        - subnet: ${DMZ_NETWORK_SUBNET}
-          gateway: ${DMZ_NETWORK_ROUTE}
+  proxy:
+    external: true
 
-  public:
-    name: public  
-    ipam:
-      config:
-        - subnet: ${PUBLIC_NETWORK_SUBNET}
-          gateway: ${PUBLIC_NETWORK_ROUTE}
-
-  secure:
-    name: secure
-    ipam:
-      config:
-        - subnet: ${SECURE_NETWORK_SUBNET}
-          gateway: ${SECURE_NETWORK_ROUTE}
-
-  admin:
-    name: admin      
-    ipam:
-      config:
-        - subnet: ${ADMIN_NETWORK_SUBNET}
-          gateway: ${ADMIN_NETWORK_ROUTE}
